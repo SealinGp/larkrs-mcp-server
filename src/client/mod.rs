@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 pub mod auth;
 pub mod bitable;
-
+pub mod bot;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LarkApiResponse<T> {

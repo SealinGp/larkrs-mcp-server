@@ -1,6 +1,9 @@
 use poem_mcpserver::{McpServer, Tools, stdio::stdio, tool::Json};
 
-use client::bitable::{SearchRecordsResponse, table::BitableTableClient};
+use client::{
+    bitable::{SearchRecordsResponse, table::BitableTableClient},
+    bot::{ChatInfoItem, chat::ChatClient},
+};
 
 mod client;
 
@@ -87,6 +90,19 @@ impl LarkServer {
             .unwrap_or_default();
 
         Json(fields_response.into())
+    }
+
+    /// Get a list of chat groups
+    ///
+    /// Returns:
+    ///     A JSON array of chat groups with chat_id and name
+    async fn chat_group_list(&self) -> Json<Vec<ChatInfoItem>> {
+        Json(
+            ChatClient::new()
+                .get_chat_group_list()
+                .await
+                .unwrap_or_default(),
+        )
     }
 }
 
