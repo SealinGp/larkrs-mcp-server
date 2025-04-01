@@ -104,6 +104,44 @@ impl LarkServer {
                 .unwrap_or_default(),
         )
     }
+
+    /// Send a text message to a chat
+    ///
+    /// Parameters:
+    ///     chat_id - The ID of the chat to send the message to
+    ///     text - The text content of the message
+    ///
+    /// Returns:
+    ///     A JSON response containing the message_id
+    async fn send_text_message(&self, chat_id: String, text: String) -> Json<()> {
+        let _ = ChatClient::new()
+            .send_text_message(&chat_id, &text)
+            .await
+            .unwrap_or_default();
+        Json(())
+    }
+    
+    /// Send a markdown message to a chat
+    ///
+    /// Parameters:
+    ///     chat_id - The ID of the chat to send the message to
+    ///     title - The title of the markdown message
+    ///     content - The markdown formatted content as a string
+    ///
+    /// Returns:
+    ///     A JSON response containing the message_id
+    async fn send_markdown_message(
+        &self, 
+        chat_id: String, 
+        title: String,
+        content: String
+    ) -> Json<()> {
+        let _ = ChatClient::new()
+            .send_markdown_message(&chat_id, &title, &content)
+            .await
+            .unwrap_or_default();
+        Json(())
+    }
 }
 
 #[tokio::main]
