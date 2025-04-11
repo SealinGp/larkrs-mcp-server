@@ -1,11 +1,9 @@
 use poem_mcpserver::{McpServer, Tools, stdio::stdio, tool::Json};
 
-use client::{
-    bitable::{SearchRecordsResponse, table::BitableTableClient},
+use larkrs_client::{
+    bitable::{SearchRecordsResponse, table::BitableTableClient, FieldInfo},
     bot::{ChatInfoItem, chat::ChatClient},
 };
-
-mod client;
 
 struct LarkServer {}
 
@@ -83,7 +81,7 @@ impl LarkServer {
         &self,
         app_token: String,
         table_id: String,
-    ) -> Json<Vec<client::bitable::FieldInfo>> {
+    ) -> Json<Vec<FieldInfo>> {
         let fields_response = BitableTableClient::new()
             .get_fields_list(app_token.as_str(), table_id.as_str())
             .await

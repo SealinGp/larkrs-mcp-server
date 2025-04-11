@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
-use crate::client::LarkApiResponse;
-use crate::client::auth::FeishuTokenManager;
-use crate::client::bitable::{FieldsListResponse, SearchRecordsResponse};
+use crate::LarkApiResponse;
+use crate::auth::FeishuTokenManager;
+use crate::bitable::{FieldsListResponse, SearchRecordsResponse};
 use anyhow::{Result, anyhow};
 use reqwest::Client;
 use serde_json::Value;
@@ -242,7 +242,7 @@ mod tests {
         let result = client.get_fields_list(app_token, table_id).await;
         assert!(result.is_ok());
 
-        let fields: Vec<crate::client::bitable::FieldInfo> = result.unwrap().into();
+        let fields: Vec<crate::bitable::FieldInfo> = result.unwrap().into();
         println!("Simplified Field Infos: {:#?}", fields);
     }
 }

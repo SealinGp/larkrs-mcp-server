@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use crate::client::LarkApiResponse;
-use crate::client::auth::FeishuTokenManager;
+use crate::LarkApiResponse;
+use crate::auth::FeishuTokenManager;
 use anyhow::{Result, anyhow};
 use reqwest::Client;
 use serde_json::Value;
