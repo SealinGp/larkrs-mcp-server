@@ -1,7 +1,7 @@
 use poem_mcpserver::{McpServer, Tools, stdio::stdio, tool::Json};
 
 use larkrs_client::{
-    bitable::{SearchRecordsResponse, table::BitableTableClient, FieldInfo},
+    bitable::{FieldInfo, SearchRecordsCond, SearchRecordsResponse, table::BitableTableClient},
     bot::{ChatInfoItem, chat::ChatClient},
 };
 
@@ -25,7 +25,11 @@ impl LarkServer {
     ) -> Json<SearchRecordsResponse> {
         Json(
             BitableTableClient::new()
-                .get_records_list(app_token.as_str(), table_id.as_str())
+                .get_records_list(
+                    app_token.as_str(),
+                    table_id.as_str(),
+                    SearchRecordsCond::default(),
+                )
                 .await
                 .unwrap_or_default(),
         )
@@ -77,11 +81,7 @@ impl LarkServer {
     ///
     /// Returns:
     ///     A JSON array of simplified field information (field_name, description, is_primary, ui_type, write_type)
-    async fn table_fields_info(
-        &self,
-        app_token: String,
-        table_id: String,
-    ) -> Json<Vec<FieldInfo>> {
+    async fn table_fields_info(&self, app_token: String, table_id: String) -> Json<Vec<FieldInfo>> {
         let fields_response = BitableTableClient::new()
             .get_fields_list(app_token.as_str(), table_id.as_str())
             .await
@@ -118,7 +118,7 @@ impl LarkServer {
             .unwrap_or_default();
         Json(())
     }
-    
+
     /// Send a markdown message to a chat
     ///
     /// Parameters:
@@ -129,10 +129,10 @@ impl LarkServer {
     /// Returns:
     ///     A JSON response containing the message_id
     async fn send_markdown_message(
-        &self, 
-        chat_id: String, 
+        &self,
+        chat_id: String,
         title: String,
-        content: String
+        content: String,
     ) -> Json<()> {
         let _ = ChatClient::new()
             .send_markdown_message(&chat_id, &title, &content)

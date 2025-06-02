@@ -33,18 +33,68 @@ pub struct UserId {
     pub union_id: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SearchRecordsRequest {
+#[derive(Debug, Serialize, Deserialize, Default)]
+pub struct SearchRecordsCond {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub filter: Option<String>,
+    pub filter: Option<Filter>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sort: Option<Vec<SortKey>>,
+    pub sort: Option<Vec<Sort>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub field_names: Option<Vec<String>>,
+    pub view_id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub page_size: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub page_token: Option<String>,
+    pub automatic_fields: Option<bool>,
+}
+
+/// Enum for filter conjunction types
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum FilterConjunction {
+    And,
+    Or,
+}
+
+impl Default for FilterConjunction {
+    fn default() -> Self {
+        FilterConjunction::And
+    }
+}
+
+/// Enum for filter operator types
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum FilterOperator {
+    Is,
+    IsNot,
+    Contains,
+    DoesNotContain,
+    IsEmpty,
+    IsNotEmpty,
+    IsGreater,
+    IsGreaterEqual,
+    IsLess,
+    IsLessEqual,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Filter {
+    pub conditions: Vec<FilterCondition>,
+    #[serde(default)]
+    pub conjunction: FilterConjunction,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FilterCondition {
+    pub field_name: String,
+    pub operator: FilterOperator,
+    pub value: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Sort {
+    pub field_name: String,
+    #[serde(default)]
+    pub desc: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

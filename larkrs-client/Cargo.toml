@@ -1,14 +1,14 @@
 [package]
 name = "larkrs-client"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "Lark (Feishu) API client library for Rust"
 license = "MIT"
 authors = ["hanxuanliang <hxuanliang@gmail.com>"]
-repository = "https://github.com/hanxuanliang/larkrs-mcp-server/larkrs-client"
+repository = "https://github.com/hanxuanliang/larkrs-mcp-server"
 documentation = "https://docs.rs/larkrs-client"
-homepage = "https://github.com/hanxuanliang/larkrs-mcp-server/larkrs-client"
-keywords = ["lark", "feishu", "api", "client", "mcp-server"]
+homepage = "https://github.com/hanxuanliang/larkrs-mcp-server"
+keywords = ["lark", "feishu", "mcp-server"]
 categories = ["api-bindings", "web-programming::http-client"]
 readme = "README.md"
 

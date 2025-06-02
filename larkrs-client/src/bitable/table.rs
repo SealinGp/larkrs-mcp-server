@@ -40,6 +40,7 @@ impl BitableTableClient {
         &self,
         app_token: &str,
         table_id: &str,
+        request: super::SearchRecordsCond,
     ) -> Result<SearchRecordsResponse> {
         let url = format!(
             "https://open.feishu.cn/open-apis/bitable/v1/apps/{}/tables/{}/records/search",
@@ -51,7 +52,7 @@ impl BitableTableClient {
             .post(&url)
             .header("Authorization", format!("Bearer {}", token))
             .header("Content-Type", "application/json; charset=utf-8")
-            .json(&serde_json::json!({}))
+            .json(&request)
             .send()
             .await
             .map_err(|e| anyhow!(e).context("Failed to send request for searching records"))?
@@ -190,6 +191,9 @@ impl BitableTableClient {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::bitable::{
+        Filter, FilterCondition, FilterConjunction, FilterOperator, SearchRecordsCond,
+    };
 
     #[tokio::test]
     async fn test_get_records_list() {
@@ -197,9 +201,27 @@ mod tests {
 
         let client = BitableTableClient::new();
 
-        let app_token = "xxxx";
-        let table_id = "xxxx";
-        let result = client.get_records_list(app_token, table_id).await;
+        let app_token = "xxx";
+        let table_id = "xxx";
+        let view_id = "xxx";
+        let result = client
+            .get_records_list(
+                &app_token,
+                &table_id,
+                SearchRecordsCond {
+                    view_id: view_id.to_string(),
+                    filter: Some(Filter {
+                        conditions: vec![FilterCondition {
+                            field_name: "战法".to_string(),
+                            operator: FilterOperator::Is,
+                            value: vec!["战法A".to_string()],
+                        }],
+                        conjunction: FilterConjunction::And,
+                    }),
+                    ..Default::default()
+                },
+            )
+            .await;
         assert!(result.is_ok());
 
         println!("Result: {:#?}", result.unwrap());
