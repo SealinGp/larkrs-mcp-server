@@ -36,6 +36,7 @@ use serde::{Deserialize, Serialize};
 pub mod auth;
 pub mod bitable;
 pub mod bot;
+pub mod wiki;
 
 /// Response structure for Lark API calls.
 ///

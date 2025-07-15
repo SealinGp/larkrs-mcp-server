@@ -11,3 +11,5 @@ dotenvy = "0.15"
 poem-mcpserver = {version = "0.1.8", features = ["poem"]}
 schemars = "0.8.22"
 larkrs-client = { path = "./larkrs-client" }
+log = "0.4"
+env_logger = "0.11"

@@ -1,8 +1,10 @@
 use poem_mcpserver::{McpServer, Tools, stdio::stdio, tool::Json};
+use log::{info, warn, error};
 
 use larkrs_client::{
     bitable::{FieldInfo, SearchRecordsCond, SearchRecordsResponse, table::BitableTableClient},
     bot::{ChatInfoItem, chat::ChatClient},
+    wiki::{WikiContentResponse, client::WikiClient},
 };
 
 struct LarkServer {}
@@ -140,9 +142,50 @@ impl LarkServer {
             .unwrap_or_default();
         Json(())
     }
+
+    /// Read wiki content from a Feishu wiki URL
+    ///
+    /// input feishu wiki url like: https://tparts-global.feishu.cn/wiki/TCm0wUnFwilLH8kiQGlc9Suunfd?fromScene=spaceOverview
+    /// Args:
+    ///     wiki_url: The full Feishu wiki URL
+    ///
+    /// Returns:
+    ///     A JSON response containing the wiki content
+    async fn read_wiki_content(&self, wiki_url: String) -> Json<WikiContentResponse> {
+        info!("Processing wiki URL: {}", wiki_url);
+        
+        let wiki_client = WikiClient::new();
+        
+        // Extract node_token from the URL
+        match wiki_client.parse_wiki_url(&wiki_url) {
+            Ok((_, node_token)) => {
+                info!("Extracted node_token: {}", node_token);
+                match wiki_client.get_wiki_content(&node_token).await {
+                    Ok(content) => {
+                        info!("Successfully retrieved wiki content");
+                        Json(content)
+                    }
+                    Err(e) => {
+                        error!("Failed to get wiki content: {}", e);
+                        Json(WikiContentResponse::default())
+                    }
+                }
+            }
+            Err(e) => {
+                error!("Failed to parse wiki URL: {}", e);
+                Json(WikiContentResponse::default())
+            }
+        }
+    }
 }
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    // Initialize logger - logs will go to stderr, not stdout
+    env_logger::Builder::from_default_env()
+        .target(env_logger::Target::Stderr)
+        .init();
+    
+    info!("Starting Lark MCP Server");
     stdio(McpServer::new().tools(LarkServer {})).await
 }
